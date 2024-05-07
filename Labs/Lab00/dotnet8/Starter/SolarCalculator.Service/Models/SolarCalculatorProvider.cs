@@ -12,10 +12,8 @@ namespace SolarCalculator.Service.Models;
 //    "status":"OK"
 //}
 
-#pragma warning disable IDE1006 // Naming Styles
 public record Results(string sunrise, string sunset, string solar_noon, string day_length);
 public record SolarData(Results? results, string status);
-#pragma warning restore IDE1006 // Naming Styles
 
 public class SolarCalculatorProvider
 {
@@ -26,7 +24,7 @@ public class SolarCalculatorProvider
 
         try
         {
-            var solarTimes = new SolarTimes(date, latitude, longitude);
+            SolarTimes solarTimes = new(date, latitude, longitude);
             result = new(
                 new(
                     solarTimes.Sunrise.ToLongTimeString(),

@@ -1,7 +1,7 @@
-﻿namespace HouseControl.Library;
+namespace HouseControl.Library;
 
 public enum DeviceCommand
 {
-    On,
-    Off,
+	On,
+	Off,
 }

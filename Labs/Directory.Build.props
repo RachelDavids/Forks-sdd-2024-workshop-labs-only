@@ -1,0 +1,11 @@
+<Project>
+	<PropertyGroup Label="Traceability">
+		<ImportedFiles>$(ImportedFiles);$(MSBuildThisFileFullPath)</ImportedFiles>
+	</PropertyGroup>
+	<!-- Build content is not mandatory in this file -->
+	<!-- However, presence of this file will stop MSBuild from looking in any Parent folders for a file of the same name -->
+
+	<!-- allow user to override settings -->
+	<Import Project="$(MSBuildThisFileDirectory)My.Working.props" Condition="Exists('$(MSBuildThisFileDirectory)My.Working.props')" />
+
+</Project>

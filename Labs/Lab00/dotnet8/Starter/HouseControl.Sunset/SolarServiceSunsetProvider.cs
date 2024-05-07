@@ -4,10 +4,9 @@ namespace HouseControl.Sunset;
 
 public class SolarServiceSunsetProvider
 {
-#pragma warning disable IDE1006 // Naming Styles
     private record Results(string sunrise, string sunset, string solar_noon, string day_length);
+
     private record SolarData(Results results, string status);
-#pragma warning restore IDE1006 // Naming Styles
 
     private readonly double latitude;
     private readonly double longitude;
@@ -63,9 +62,11 @@ public class SolarServiceSunsetProvider
             client.GetAsync($"SolarCalculator/{latitude:F4}/{longitude:F4}/{date:yyyy-MM-dd}").Result;
 
         if (!response.IsSuccessStatusCode)
+        {
             throw new HttpRequestException($"Unable to complete request: status code {response.StatusCode}");
+        }
 
-        var stringResult =
+        string stringResult =
             response.Content.ReadAsStringAsync().Result;
 
         return stringResult;
