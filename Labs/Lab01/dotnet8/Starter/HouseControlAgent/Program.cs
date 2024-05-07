@@ -3,13 +3,13 @@ using HouseControl.Sunset;
 
 namespace HouseControlAgent;
 
-class Program
+internal class Program
 {
-    static async Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
         Console.WriteLine("Initializing Controller");
 
-        var controller = InitializeHouseController();
+        HouseController controller = InitializeHouseController();
 
         await Task.Delay(1); // placeholder to keep Main signature when test code is not used
 
@@ -19,7 +19,7 @@ class Program
         await controller.SendCommand(5, DeviceCommand.On);
         await controller.SendCommand(5, DeviceCommand.Off);
 
-        var currentTime = DateTime.Now;
+        DateTime currentTime = DateTime.Now;
         controller.ScheduleOneTimeItem(currentTime.AddMinutes(1), 3, DeviceCommand.On);
         controller.ScheduleOneTimeItem(currentTime.AddMinutes(2), 5, DeviceCommand.On);
         controller.ScheduleOneTimeItem(currentTime.AddMinutes(3), 3, DeviceCommand.Off);
@@ -33,8 +33,8 @@ class Program
             command = Console.ReadLine() ?? "";
             if (command == "s")
             {
-                var schedule = controller.GetCurrentScheduleItems();
-                foreach (var item in schedule)
+                List<ScheduleItem> schedule = controller.GetCurrentScheduleItems();
+                foreach (ScheduleItem item in schedule)
                 {
                     Console.WriteLine($"{item.Info.EventTime:G} - {item.Info.TimeType} ({item.Info.RelativeOffset}), Device: {item.Device}, Command: {item.Command}");
                 }
@@ -52,12 +52,12 @@ class Program
         //51.4768,-0.0030 = Royal Observatory, Greenwich
         //51.520,-0.0963 = Barbican Centre
 
-        var fileName = AppDomain.CurrentDomain.BaseDirectory + "ScheduleData";
-        var sunsetProvider = new SolarServiceSunsetProvider(45.6382, -122.7013);
-        var schedule = new Schedule(fileName, sunsetProvider);
-        var controller = new HouseController(schedule);
+        string fileName = AppDomain.CurrentDomain.BaseDirectory + "ScheduleData";
+        SolarServiceSunsetProvider sunsetProvider = new(45.6382, -122.7013);
+        Schedule schedule = new(fileName, sunsetProvider);
+        HouseController controller = new(schedule);
 
-        var sunset = sunsetProvider.GetSunset(DateTime.Today.AddDays(1));
+        DateTimeOffset sunset = sunsetProvider.GetSunset(DateTime.Today.AddDays(1));
         Console.WriteLine($"Sunset Tomorrow: {sunset:G}");
 
         return controller;

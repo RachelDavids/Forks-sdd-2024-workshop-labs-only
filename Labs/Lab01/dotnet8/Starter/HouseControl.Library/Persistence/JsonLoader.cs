@@ -6,12 +6,12 @@ public class JsonLoader : IScheduleLoader
 {
     public IEnumerable<ScheduleItem> LoadScheduleItems(string filename)
     {
-        var output = new List<ScheduleItem>();
-        filename = filename + ".json";
+        List<ScheduleItem>? output = new();
+        filename += ".json";
 
         if (File.Exists(filename))
         {
-            using var reader = new StreamReader(filename);
+            using StreamReader reader = new(filename);
             output = JsonSerializer.Deserialize<List<ScheduleItem>>(
                 reader.ReadToEnd());
         }

@@ -6,10 +6,10 @@ public class JsonSaver : IScheduleSaver
 {
     public void SaveScheduleItems(string filename, IEnumerable<ScheduleItem> schedule)
     {
-        filename = filename + ".json";
-        var output = JsonSerializer.Serialize(schedule, new JsonSerializerOptions() { WriteIndented = true });
+        filename += ".json";
+        string output = JsonSerializer.Serialize(schedule, new JsonSerializerOptions() { WriteIndented = true });
 
-        using var writer = new StreamWriter(filename, false);
+        using StreamWriter writer = new(filename, false);
         writer.WriteLine(output);
     }
 }

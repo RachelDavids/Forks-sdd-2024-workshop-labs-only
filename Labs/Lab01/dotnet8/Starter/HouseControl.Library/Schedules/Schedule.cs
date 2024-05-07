@@ -7,15 +7,13 @@ public class Schedule : List<ScheduleItem>
     private string filename;
 
     private IScheduleLoader? loader;
-    public IScheduleLoader Loader
-    {
+    public IScheduleLoader Loader {
         get => loader ??= new JsonLoader();
         set => loader = value;
     }
 
     private IScheduleSaver? saver;
-    public IScheduleSaver Saver
-    {
+    public IScheduleSaver Saver {
         get => saver ??= new JsonSaver();
         set => saver = value;
     }
@@ -24,19 +22,19 @@ public class Schedule : List<ScheduleItem>
 
     public Schedule(string filename, SolarServiceSunsetProvider sunsetProvider)
     {
-        this.scheduleHelper = new ScheduleHelper(sunsetProvider);
+        scheduleHelper = new ScheduleHelper(sunsetProvider);
         this.filename = filename;
         LoadSchedule();
     }
 
     public void LoadSchedule()
     {
-        this.Clear();
-        this.AddRange(Loader.LoadScheduleItems(filename));
+        Clear();
+        AddRange(Loader.LoadScheduleItems(filename));
 
         // update loaded schedule dates to today
         DateTimeOffset today = DateTimeOffset.Now.Date;
-        foreach (var item in this)
+        foreach (ScheduleItem item in this)
         {
             item.Info.EventTime = today + item.Info.EventTime.TimeOfDay;
         }
@@ -59,18 +57,17 @@ public class Schedule : List<ScheduleItem>
     {
         for (int i = Count - 1; i >= 0; i--)
         {
-            var currentItem = this[i];
+            ScheduleItem currentItem = this[i];
             while (currentItem.Info.EventTime < DateTimeOffset.Now)
             {
                 if (currentItem.Info.Type == ScheduleType.Once)
                 {
-                    this.RemoveAt(i);
+                    RemoveAt(i);
                     break;
                 }
 
                 currentItem.Info.EventTime =
-                    currentItem.Info.Type switch
-                    {
+                    currentItem.Info.Type switch {
                         ScheduleType.Daily => scheduleHelper.RollForwardToNextDay(currentItem.Info),
                         ScheduleType.Weekday => scheduleHelper.RollForwardToNextWeekdayDay(currentItem.Info),
                         ScheduleType.Weekend => scheduleHelper.RollForwardToNextWeekendDay(currentItem.Info),

@@ -8,7 +8,7 @@ public class ScheduleHelper
 
     public ScheduleHelper(SolarServiceSunsetProvider sunsetProvider)
     {
-        this.SunsetProvider = sunsetProvider;
+        SunsetProvider = sunsetProvider;
     }
 
     public static DateTimeOffset Tomorrow()
@@ -26,11 +26,12 @@ public class ScheduleHelper
     public DateTimeOffset RollForwardToNextDay(ScheduleInfo info)
     {
         if (IsInFuture(info.EventTime))
-            return info.EventTime;
-
-        var nextDay = Tomorrow();
-        return info.TimeType switch
         {
+            return info.EventTime;
+        }
+
+        DateTimeOffset nextDay = Tomorrow();
+        return info.TimeType switch {
             ScheduleTimeType.Standard => nextDay + info.EventTime.TimeOfDay + info.RelativeOffset,
             ScheduleTimeType.Sunset => SunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
             ScheduleTimeType.Sunrise => SunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
@@ -41,17 +42,18 @@ public class ScheduleHelper
     public DateTimeOffset RollForwardToNextWeekdayDay(ScheduleInfo info)
     {
         if (IsInFuture(info.EventTime))
+        {
             return info.EventTime;
+        }
 
-        var nextDay = Tomorrow();
-        while (nextDay.DayOfWeek == DayOfWeek.Saturday
-            || nextDay.DayOfWeek == DayOfWeek.Sunday)
+        DateTimeOffset nextDay = Tomorrow();
+        while (nextDay.DayOfWeek is DayOfWeek.Saturday
+            or DayOfWeek.Sunday)
         {
             nextDay = nextDay.AddDays(1);
         }
 
-        return info.TimeType switch
-        {
+        return info.TimeType switch {
             ScheduleTimeType.Standard => nextDay + info.EventTime.TimeOfDay + info.RelativeOffset,
             ScheduleTimeType.Sunset => SunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
             ScheduleTimeType.Sunrise => SunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
@@ -62,16 +64,17 @@ public class ScheduleHelper
     public DateTimeOffset RollForwardToNextWeekendDay(ScheduleInfo info)
     {
         if (IsInFuture(info.EventTime))
+        {
             return info.EventTime;
+        }
 
-        var nextDay = Tomorrow();
-        while (nextDay.DayOfWeek != DayOfWeek.Saturday
-            && nextDay.DayOfWeek != DayOfWeek.Sunday)
+        DateTimeOffset nextDay = Tomorrow();
+        while (nextDay.DayOfWeek is not DayOfWeek.Saturday
+            and not DayOfWeek.Sunday)
         {
             nextDay = nextDay.AddDays(1);
         }
-        return info.TimeType switch
-        {
+        return info.TimeType switch {
             ScheduleTimeType.Standard => nextDay + info.EventTime.TimeOfDay + info.RelativeOffset,
             ScheduleTimeType.Sunset => SunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
             ScheduleTimeType.Sunrise => SunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,

@@ -22,10 +22,12 @@ public class HouseController
 
     private async void scheduler_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        var itemsToProcess = schedule.GetCurrentScheduleItems();
+        List<ScheduleItem> itemsToProcess = schedule.GetCurrentScheduleItems();
 
-        foreach (var item in itemsToProcess)
+        foreach (ScheduleItem item in itemsToProcess)
+        {
             await SendCommand(item.Device, item.Command);
+        }
 
 #if DEBUG
         Console.Write($"Schedule Items Processed: {itemsToProcess.Count()} - ");
@@ -34,7 +36,7 @@ public class HouseController
         schedule.RollSchedule();
 
 #if DEBUG
-        Console.WriteLine($"Total Items: {schedule.Count} - Active Items: {schedule.Count(si => si.IsEnabled).ToString()}");
+        Console.WriteLine($"Total Items: {schedule.Count} - Active Items: {schedule.Count(si => si.IsEnabled)}");
 #endif
     }
 
@@ -49,11 +51,10 @@ public class HouseController
     public void ScheduleOneTimeItem(DateTimeOffset time, int device,
         DeviceCommand command)
     {
-        var scheduleItem = new ScheduleItem(
+        ScheduleItem scheduleItem = new(
             device,
             command,
-            new ScheduleInfo()
-            {
+            new ScheduleInfo() {
                 EventTime = time,
                 Type = ScheduleType.Once,
             },

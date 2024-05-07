@@ -3,7 +3,7 @@
 [TestFixture]
 public class ScheduleTests
 {
-    readonly string fileName = AppDomain.CurrentDomain.BaseDirectory + "\\ScheduleData";
+    private readonly string fileName = AppDomain.CurrentDomain.BaseDirectory + "\\ScheduleData";
 
     [Test]
     public void ScheduleItems_OnCreation_IsPopulated()

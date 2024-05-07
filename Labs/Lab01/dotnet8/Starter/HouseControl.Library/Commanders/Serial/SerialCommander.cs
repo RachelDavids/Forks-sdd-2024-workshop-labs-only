@@ -24,7 +24,7 @@ public class SerialCommander
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
 
-        foreach (var bit in message)
+        foreach (char bit in message)
         {
             switch (bit)
             {

@@ -1,6 +1,4 @@
-﻿using Moq;
-
-namespace HouseControl.Library.Test;
+﻿namespace HouseControl.Library.Test;
 
 [TestFixture]
 public class ScheduleHelperTests
@@ -15,5 +13,5 @@ public class ScheduleHelperTests
     //   Today
     //   DurationFromNow
     //   IsInPast
-    //   IsInFuture  
+    //   IsInFuture
 }
