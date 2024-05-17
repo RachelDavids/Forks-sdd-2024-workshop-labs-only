@@ -4,14 +4,14 @@ namespace HouseControl.Library;
 
 public class HouseController
 {
-    private SerialCommander commander;
+    private ISerialCommander commander;
 
     private System.Timers.Timer scheduler = new(60000);
     private Schedule schedule;
 
-    public HouseController(Schedule schedule)
+    public HouseController(Schedule schedule, ISerialCommander serialCommander)
     {
-        commander = new SerialCommander();
+        commander = serialCommander;
 
         this.schedule = schedule;
 
@@ -54,7 +54,8 @@ public class HouseController
         ScheduleItem scheduleItem = new(
             device,
             command,
-            new ScheduleInfo() {
+            new ScheduleInfo()
+            {
                 EventTime = time,
                 Type = ScheduleType.Once,
             },
@@ -76,13 +77,7 @@ public class HouseController
             .OrderBy(i => i.Info.EventTime).ToList();
     }
 
-    public void ReloadSchedule()
-    {
-        schedule.LoadSchedule();
-    }
+    public void ReloadSchedule() => schedule.LoadSchedule();
 
-    public void SaveSchedule()
-    {
-        schedule.SaveSchedule();
-    }
+    public void SaveSchedule() => schedule.SaveSchedule();
 }

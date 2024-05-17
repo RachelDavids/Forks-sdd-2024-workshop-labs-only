@@ -11,9 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HouseControlAgent", "HouseC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarCalculator.Service", "SolarCalculator.Service\SolarCalculator.Service.csproj", "{06B2BAD0-AB63-47DF-BF8C-43EB4569D83D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseControl.Library.Test", "HouseControl.Library.Test\HouseControl.Library.Test.csproj", "{062C394A-AD87-487D-AB71-CAEBDE6E9981}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HouseControl.Library.Test", "HouseControl.Library.Test\HouseControl.Library.Test.csproj", "{062C394A-AD87-487D-AB71-CAEBDE6E9981}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseControl.Sunset.Test", "HouseControl.Sunset.Test\HouseControl.Sunset.Test.csproj", "{09465155-417A-4E11-9C4A-962B4F39FF3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HouseControl.Sunset.Test", "HouseControl.Sunset.Test\HouseControl.Sunset.Test.csproj", "{09465155-417A-4E11-9C4A-962B4F39FF3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataFiles", "DataFiles", "{BB9047D4-81D5-4F73-AF96-A87E78BD89F6}"
+	ProjectSection(SolutionItems) = preProject
+		DataFiles\ScheduleData.json = DataFiles\ScheduleData.json
+		DataFiles\ScheduleData.txt = DataFiles\ScheduleData.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

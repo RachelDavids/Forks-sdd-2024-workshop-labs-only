@@ -9,15 +9,20 @@ internal class Program
     {
         Console.WriteLine("Initializing Controller");
 
-        HouseController controller = InitializeHouseController();
+        //45.6382,-122.7013 = Vancouver, WA, USA
+        //51.4768,-0.0030 = Royal Observatory, Greenwich
+        //51.520,-0.0963 = Barbican Centre
+        HouseController controller = InitializeHouseController(
+            new CachedLocalSunsetProvider(51.520, -0.0963),
+            new DoNothingSerialCommander());
 
         await Task.Delay(1); // placeholder to keep Main signature when test code is not used
 
         // For hardware/scheduling testing purposes
         // Uncomment this section to ensure that the hardware
         // and scheduling is working as expected.
-        await controller.SendCommand(5, DeviceCommand.On);
-        await controller.SendCommand(5, DeviceCommand.Off);
+        //await controller.SendCommand(5, DeviceCommand.On);
+        //await controller.SendCommand(5, DeviceCommand.Off);
 
         DateTime currentTime = DateTime.Now;
         controller.ScheduleOneTimeItem(currentTime.AddMinutes(1), 3, DeviceCommand.On);
@@ -46,19 +51,17 @@ internal class Program
         }
     }
 
-    private static HouseController InitializeHouseController()
+    private static HouseController InitializeHouseController(ISolarServiceSunsetProvider sunsetProvider,
+        ISerialCommander serialCommander)
     {
-        //45.6382,-122.7013 = Vancouver, WA, USA
-        //51.4768,-0.0030 = Royal Observatory, Greenwich
-        //51.520,-0.0963 = Barbican Centre
 
         string fileName = AppDomain.CurrentDomain.BaseDirectory + "ScheduleData";
-        SolarServiceSunsetProvider sunsetProvider = new(45.6382, -122.7013);
         Schedule schedule = new(fileName, sunsetProvider);
-        HouseController controller = new(schedule);
+        HouseController controller = new(schedule, serialCommander);
 
-        DateTimeOffset sunset = sunsetProvider.GetSunset(DateTime.Today.AddDays(1));
-        Console.WriteLine($"Sunset Tomorrow: {sunset:G}");
+        DateTime dateTime = DateTime.Today.AddDays(1);
+        DateTimeOffset sunset = sunsetProvider.GetSunset(dateTime);
+        Console.WriteLine($"Sunset Tomorrow: {sunset.ToLocalTime():G}");
 
         return controller;
     }

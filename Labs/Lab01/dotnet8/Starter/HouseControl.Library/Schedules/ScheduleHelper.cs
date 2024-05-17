@@ -2,15 +2,8 @@
 
 namespace HouseControl.Library;
 
-public class ScheduleHelper
+public class ScheduleHelper(ISolarServiceSunsetProvider sunsetProvider)
 {
-    private readonly SolarServiceSunsetProvider SunsetProvider;
-
-    public ScheduleHelper(SolarServiceSunsetProvider sunsetProvider)
-    {
-        SunsetProvider = sunsetProvider;
-    }
-
     public static DateTimeOffset Tomorrow()
     {
         return new DateTimeOffset(
@@ -18,10 +11,7 @@ public class ScheduleHelper
             DateTimeOffset.Now.Offset);
     }
 
-    public static bool IsInFuture(DateTimeOffset checkTime)
-    {
-        return checkTime > DateTimeOffset.Now;
-    }
+    public static bool IsInFuture(DateTimeOffset checkTime) => checkTime > DateTimeOffset.Now;
 
     public DateTimeOffset RollForwardToNextDay(ScheduleInfo info)
     {
@@ -31,10 +21,11 @@ public class ScheduleHelper
         }
 
         DateTimeOffset nextDay = Tomorrow();
-        return info.TimeType switch {
+        return info.TimeType switch
+        {
             ScheduleTimeType.Standard => nextDay + info.EventTime.TimeOfDay + info.RelativeOffset,
-            ScheduleTimeType.Sunset => SunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
-            ScheduleTimeType.Sunrise => SunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
+            ScheduleTimeType.Sunset => sunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
+            ScheduleTimeType.Sunrise => sunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
             _ => info.EventTime
         };
     }
@@ -53,10 +44,11 @@ public class ScheduleHelper
             nextDay = nextDay.AddDays(1);
         }
 
-        return info.TimeType switch {
+        return info.TimeType switch
+        {
             ScheduleTimeType.Standard => nextDay + info.EventTime.TimeOfDay + info.RelativeOffset,
-            ScheduleTimeType.Sunset => SunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
-            ScheduleTimeType.Sunrise => SunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
+            ScheduleTimeType.Sunset => sunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
+            ScheduleTimeType.Sunrise => sunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
             _ => info.EventTime
         };
     }
@@ -74,10 +66,11 @@ public class ScheduleHelper
         {
             nextDay = nextDay.AddDays(1);
         }
-        return info.TimeType switch {
+        return info.TimeType switch
+        {
             ScheduleTimeType.Standard => nextDay + info.EventTime.TimeOfDay + info.RelativeOffset,
-            ScheduleTimeType.Sunset => SunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
-            ScheduleTimeType.Sunrise => SunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
+            ScheduleTimeType.Sunset => sunsetProvider.GetSunset(nextDay.Date) + info.RelativeOffset,
+            ScheduleTimeType.Sunrise => sunsetProvider.GetSunrise(nextDay.Date) + info.RelativeOffset,
             _ => info.EventTime
         };
     }

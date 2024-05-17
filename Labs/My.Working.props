@@ -1,10 +1,12 @@
 <Project>
 	<!-- This level working props -->
 
+	<!--
 	<ItemGroup>
 		<PackageReference Include="Chaucer.AnalyzerConfig.DotNetStyle" Version="24.4.23">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
+	-->
 </Project>

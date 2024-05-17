@@ -3,6 +3,7 @@
 namespace HouseControl.Sunset;
 
 public class SolarServiceSunsetProvider
+    : ISolarServiceSunsetProvider
 {
     private record Results(string sunrise, string sunset, string solar_noon, string day_length);
     private record SolarData(Results results, string status);

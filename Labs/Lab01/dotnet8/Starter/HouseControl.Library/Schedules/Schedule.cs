@@ -7,20 +7,22 @@ public class Schedule : List<ScheduleItem>
     private string filename;
 
     private IScheduleLoader? loader;
-    public IScheduleLoader Loader {
+    public IScheduleLoader Loader
+    {
         get => loader ??= new JsonLoader();
         set => loader = value;
     }
 
     private IScheduleSaver? saver;
-    public IScheduleSaver Saver {
+    public IScheduleSaver Saver
+    {
         get => saver ??= new JsonSaver();
         set => saver = value;
     }
 
     private readonly ScheduleHelper scheduleHelper;
 
-    public Schedule(string filename, SolarServiceSunsetProvider sunsetProvider)
+    public Schedule(string filename, ISolarServiceSunsetProvider sunsetProvider)
     {
         scheduleHelper = new ScheduleHelper(sunsetProvider);
         this.filename = filename;
@@ -41,10 +43,7 @@ public class Schedule : List<ScheduleItem>
         RollSchedule();
     }
 
-    public void SaveSchedule()
-    {
-        Saver.SaveScheduleItems(filename, this);
-    }
+    public void SaveSchedule() => Saver.SaveScheduleItems(filename, this);
 
     public List<ScheduleItem> GetCurrentScheduleItems()
     {
@@ -67,7 +66,8 @@ public class Schedule : List<ScheduleItem>
                 }
 
                 currentItem.Info.EventTime =
-                    currentItem.Info.Type switch {
+                    currentItem.Info.Type switch
+                    {
                         ScheduleType.Daily => scheduleHelper.RollForwardToNextDay(currentItem.Info),
                         ScheduleType.Weekday => scheduleHelper.RollForwardToNextWeekdayDay(currentItem.Info),
                         ScheduleType.Weekend => scheduleHelper.RollForwardToNextWeekendDay(currentItem.Info),

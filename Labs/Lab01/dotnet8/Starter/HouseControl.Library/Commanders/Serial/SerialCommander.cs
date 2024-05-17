@@ -3,7 +3,7 @@ using System.IO.Ports;
 
 namespace HouseControl.Library;
 
-public class SerialCommander
+public class SerialCommander : ISerialCommander
 {
     private SerialPort serialPort;
     private int baud = 115200;
