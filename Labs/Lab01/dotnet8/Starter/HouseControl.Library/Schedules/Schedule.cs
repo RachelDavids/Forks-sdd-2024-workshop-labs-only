@@ -4,7 +4,8 @@ namespace HouseControl.Library;
 
 public class Schedule : List<ScheduleItem>
 {
-    private string filename;
+    private readonly string filename;
+    private readonly ITimeProvider timeProvider;
 
     private IScheduleLoader? loader;
     public IScheduleLoader Loader
@@ -22,10 +23,13 @@ public class Schedule : List<ScheduleItem>
 
     private readonly ScheduleHelper scheduleHelper;
 
-    public Schedule(string filename, ISolarServiceSunsetProvider sunsetProvider)
+    public Schedule(string filename,
+        ISolarServiceSunsetProvider sunsetProvider,
+        ITimeProvider timeProvider)
     {
-        scheduleHelper = new ScheduleHelper(sunsetProvider);
+        scheduleHelper = new ScheduleHelper(sunsetProvider, timeProvider);
         this.filename = filename;
+        this.timeProvider = timeProvider;
         LoadSchedule();
     }
 
@@ -35,7 +39,7 @@ public class Schedule : List<ScheduleItem>
         AddRange(Loader.LoadScheduleItems(filename));
 
         // update loaded schedule dates to today
-        DateTimeOffset today = DateTimeOffset.Now.Date;
+        DateTimeOffset today = timeProvider.Now.Date;
         foreach (ScheduleItem item in this)
         {
             item.Info.EventTime = today + item.Info.EventTime.TimeOfDay;
@@ -48,7 +52,7 @@ public class Schedule : List<ScheduleItem>
     public List<ScheduleItem> GetCurrentScheduleItems()
     {
         return this.Where(si => si.IsEnabled &&
-            (si.Info.EventTime - DateTimeOffset.Now).Duration() < TimeSpan.FromSeconds(30))
+            (si.Info.EventTime - timeProvider.Now).Duration() < TimeSpan.FromSeconds(30))
             .ToList();
     }
 
@@ -57,7 +61,7 @@ public class Schedule : List<ScheduleItem>
         for (int i = Count - 1; i >= 0; i--)
         {
             ScheduleItem currentItem = this[i];
-            while (currentItem.Info.EventTime < DateTimeOffset.Now)
+            while (currentItem.Info.EventTime < timeProvider.Now)
             {
                 if (currentItem.Info.Type == ScheduleType.Once)
                 {

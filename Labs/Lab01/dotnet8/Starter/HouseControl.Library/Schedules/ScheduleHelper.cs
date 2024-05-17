@@ -2,25 +2,16 @@
 
 namespace HouseControl.Library;
 
-public class ScheduleHelper(ISolarServiceSunsetProvider sunsetProvider)
+public class ScheduleHelper(ISolarServiceSunsetProvider sunsetProvider, ITimeProvider timeProvider)
 {
-    public static DateTimeOffset Tomorrow()
-    {
-        return new DateTimeOffset(
-            DateTimeOffset.Now.Date.AddDays(1),
-            DateTimeOffset.Now.Offset);
-    }
-
-    public static bool IsInFuture(DateTimeOffset checkTime) => checkTime > DateTimeOffset.Now;
-
     public DateTimeOffset RollForwardToNextDay(ScheduleInfo info)
     {
-        if (IsInFuture(info.EventTime))
+        if (timeProvider.IsInFuture(info.EventTime))
         {
             return info.EventTime;
         }
 
-        DateTimeOffset nextDay = Tomorrow();
+        DateTimeOffset nextDay = timeProvider.Tomorrow();
         return info.TimeType switch
         {
             ScheduleTimeType.Standard => nextDay + info.EventTime.TimeOfDay + info.RelativeOffset,
@@ -32,12 +23,12 @@ public class ScheduleHelper(ISolarServiceSunsetProvider sunsetProvider)
 
     public DateTimeOffset RollForwardToNextWeekdayDay(ScheduleInfo info)
     {
-        if (IsInFuture(info.EventTime))
+        if (timeProvider.IsInFuture(info.EventTime))
         {
             return info.EventTime;
         }
 
-        DateTimeOffset nextDay = Tomorrow();
+        DateTimeOffset nextDay = timeProvider.Tomorrow();
         while (nextDay.DayOfWeek is DayOfWeek.Saturday
             or DayOfWeek.Sunday)
         {
@@ -55,12 +46,12 @@ public class ScheduleHelper(ISolarServiceSunsetProvider sunsetProvider)
 
     public DateTimeOffset RollForwardToNextWeekendDay(ScheduleInfo info)
     {
-        if (IsInFuture(info.EventTime))
+        if (timeProvider.IsInFuture(info.EventTime))
         {
             return info.EventTime;
         }
 
-        DateTimeOffset nextDay = Tomorrow();
+        DateTimeOffset nextDay = timeProvider.Tomorrow();
         while (nextDay.DayOfWeek is not DayOfWeek.Saturday
             and not DayOfWeek.Sunday)
         {

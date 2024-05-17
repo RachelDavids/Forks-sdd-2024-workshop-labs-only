@@ -14,7 +14,8 @@ internal class Program
         //51.520,-0.0963 = Barbican Centre
         HouseController controller = InitializeHouseController(
             new CachedLocalSunsetProvider(51.520, -0.0963),
-            new DoNothingSerialCommander());
+            new DoNothingSerialCommander(),
+            new LocalTimeProvider());
 
         await Task.Delay(1); // placeholder to keep Main signature when test code is not used
 
@@ -52,11 +53,12 @@ internal class Program
     }
 
     private static HouseController InitializeHouseController(ISolarServiceSunsetProvider sunsetProvider,
-        ISerialCommander serialCommander)
+        ISerialCommander serialCommander,
+        ITimeProvider timeProvider)
     {
 
         string fileName = AppDomain.CurrentDomain.BaseDirectory + "ScheduleData";
-        Schedule schedule = new(fileName, sunsetProvider);
+        Schedule schedule = new(fileName, sunsetProvider, timeProvider);
         HouseController controller = new(schedule, serialCommander);
 
         DateTime dateTime = DateTime.Today.AddDays(1);
